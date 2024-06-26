@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace Blogger.Controllers
 {
@@ -23,7 +24,7 @@ namespace Blogger.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(string username, string password) 
+        public async Task<IActionResult> Login(string username, string password)
         {
             var user = _context.Users.SingleOrDefault(u => u.Username == username && u.Password == password);
             if (user != null)
@@ -52,7 +53,7 @@ namespace Blogger.Controllers
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Login", "Account");
+            return RedirectToAction("Welcome", "Home");
         }
 
         [HttpGet]

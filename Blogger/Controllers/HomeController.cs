@@ -5,7 +5,7 @@ using System.Diagnostics;
 
 namespace Blogger.Controllers
 {
-    [Authorize]
+    [AllowAnonymous] // Bu özelliði ekleyerek herkesin eriþebilmesini saðlýyoruz.
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -15,7 +15,7 @@ namespace Blogger.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public IActionResult Welcome()
         {
             return View();
         }
