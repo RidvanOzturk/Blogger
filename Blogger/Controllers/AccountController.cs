@@ -30,9 +30,9 @@ namespace Blogger.Controllers
             if (user != null)
             {
                 var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, user.Username)
-                };
+            {
+                new Claim(ClaimTypes.Name, user.Username)
+            };
 
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 var authProperties = new AuthenticationProperties
@@ -53,8 +53,9 @@ namespace Blogger.Controllers
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Welcome", "Welcome");
+            return RedirectToAction("Login", "Account");
         }
+
 
         [HttpGet]
         public IActionResult SignUp()
@@ -72,4 +73,5 @@ namespace Blogger.Controllers
             return RedirectToAction("Login");
         }
     }
+
 }

@@ -1,0 +1,27 @@
+﻿@model IEnumerable<Blogger.Entities.Post>
+
+@{
+    ViewData["Title"] = "All Posts";
+}
+
+<h1>All Posts</h1>
+
+@foreach (var post in Model)
+{
+    <div class="card mb-3">
+        <div class="card-header">
+            <h3>@post.Title</h3>
+        </div>
+        <div class="card-body">
+            <p>@post.Content</p>
+            <p><small>Posted on: @post.PostedDate.ToString("dd-MM-yyyy")</small></p>
+        </div>
+        <div class="card-footer">
+            <p>Comments (@post.Comments.Count)</p>
+            @foreach (var comment in post.Comments)
+            {
+                <p>@comment.Text</p>
+            }
+        </div>
+    </div>
+}

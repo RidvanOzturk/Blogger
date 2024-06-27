@@ -1,6 +1,7 @@
 ﻿using Blogger.Data;
 using Blogger.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 namespace Blogger.Controllers
 {
@@ -15,8 +16,11 @@ namespace Blogger.Controllers
         {
             return View();
         }
-       
-
+        public IActionResult AllPosts()
+        {
+            var posts = _context.Posts.Include(p => p.Comments).ToList();
+            return View(posts);
+        }
 
         [HttpPost]
         public IActionResult Create(Post post)
