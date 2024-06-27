@@ -30,6 +30,7 @@ namespace Blogger.Controllers
             //  var user = _context.Users.First(x => x.Username == );
             if (ModelState.IsValid)
             {
+                post.PostedDate= DateTime.Now;
                 _context.Add(post);
                 _context.SaveChanges();
                 return RedirectToAction("Welcome","Welcome");
