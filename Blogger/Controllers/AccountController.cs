@@ -53,7 +53,7 @@ namespace Blogger.Controllers
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Welcome", "Home");
+            return RedirectToAction("Welcome", "Welcome");
         }
 
         [HttpGet]
