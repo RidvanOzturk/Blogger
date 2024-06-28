@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Security.Claims;
 namespace Blogger.Controllers
 {
     public class PostController : Controller
@@ -28,14 +29,31 @@ namespace Blogger.Controllers
         public IActionResult Create(Post post)
         {
             // var data = new Blogger.Entities.Post();
+         //   var user = _context.Users.First(x => x.Username == );
+           // Console.WriteLine(user.Username);
 
-            //var user = _context.Users.First(x => x.Username == );
             if (ModelState.IsValid)
             {
-                post.PostedDate= DateTime.Now;
-                _context.Add(post);
-                _context.SaveChanges();
-                return RedirectToAction("Welcome","Welcome");
+                //Kullanıcının kimlik bilgisiyle aldım.
+                var username = User.Identity.Name;
+                Console.WriteLine(username);
+                
+                //User'ı db'de buldum.
+                var user = _context.Users.FirstOrDefault(x => x.Username == username);
+
+                if (user != null) 
+                {
+                    post.PostedDate = DateTime.Now;
+                    user.Posts.Add(post);
+                    _context.SaveChanges();
+
+                    return RedirectToAction("Welcome", "Welcome");
+
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Kullanıcı bulunamadı.");
+                }
             }
             return View(post);
         }
