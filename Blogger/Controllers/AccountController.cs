@@ -30,14 +30,14 @@ namespace Blogger.Controllers
             if (user != null)
             {
                 var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, user.Username)
-            };
+        {
+            new Claim(ClaimTypes.Name, user.Username)
+        };
 
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 var authProperties = new AuthenticationProperties
                 {
-                    IsPersistent = true
+                    IsPersistent = false
                 };
 
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
@@ -48,6 +48,7 @@ namespace Blogger.Controllers
             ViewBag.Error = "Wrong Username or Password";
             return View();
         }
+
 
         [HttpPost]
         public async Task<IActionResult> Logout()

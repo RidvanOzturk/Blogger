@@ -1,5 +1,6 @@
 ﻿using Blogger.Data;
 using Blogger.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -12,6 +13,7 @@ namespace Blogger.Controllers
         {
             _context = context;
         }
+        [Authorize]
         public IActionResult PostContent()
         {
             return View();
@@ -27,7 +29,7 @@ namespace Blogger.Controllers
         {
             // var data = new Blogger.Entities.Post();
 
-            //  var user = _context.Users.First(x => x.Username == );
+            //var user = _context.Users.First(x => x.Username == );
             if (ModelState.IsValid)
             {
                 post.PostedDate= DateTime.Now;
