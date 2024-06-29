@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Blogger.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.Extensions.Logging;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
