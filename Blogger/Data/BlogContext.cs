@@ -16,10 +16,11 @@ namespace Blogger.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<Post>()
-           .HasOne(p => p.User)
-           .WithMany(u => u.Posts)
-           .HasForeignKey(p => p.UserId);
+             .HasOne(p => p.User)
+             .WithMany(u => u.Posts)
+             .HasForeignKey(p => p.UserId);
         }
     }
 }

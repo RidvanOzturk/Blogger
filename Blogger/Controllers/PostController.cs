@@ -1,5 +1,6 @@
 ﻿using Blogger.Data;
 using Blogger.Entities;
+using Blogger.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -21,16 +22,24 @@ namespace Blogger.Controllers
         }
         public IActionResult AllPosts()
         {
-            var posts = _context.Posts.Include(p => p.User).ToList();
+            var posts = _context.Posts
+                .AsNoTracking()
+                .Include(post => post.User)
+                .ToList();
             return View(posts);
         }
 
         [HttpPost]
-        public IActionResult Create(Post post)
+        public IActionResult Create(PostCreateRequest request)
         {
+            var post = new Post()
+            {
+                Title = request.Title,
+                Content = request.Content
+            };
             // var data = new Blogger.Entities.Post();
-         //   var user = _context.Users.First(x => x.Username == );
-           // Console.WriteLine(user.Username);
+            //   var user = _context.Users.First(x => x.Username == );
+            // Console.WriteLine(user.Username);
 
             if (ModelState.IsValid)
             {
@@ -39,11 +48,13 @@ namespace Blogger.Controllers
                 Console.WriteLine(username);
                 
                 //User'ı db'de buldum.
-                var user = _context.Users.FirstOrDefault(x => x.Username == username);
+                var user = _context.Users
+                    .FirstOrDefault(x => x.Username == username);
 
                 if (user != null) 
                 {
                     post.PostedDate = DateTime.Now;
+                    post.UserId = user.Id;
                     user.Posts.Add(post);
                     _context.SaveChanges();
 
@@ -55,7 +66,7 @@ namespace Blogger.Controllers
                     ModelState.AddModelError("", "Kullanıcı bulunamadı.");
                 }
             }
-            return View(post);
+            return View("PostContent", post);
         }
     }
 }
