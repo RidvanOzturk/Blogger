@@ -7,6 +7,8 @@
         public string Content { get; set; }
         public DateTime PostedDate { get; set; } = DateTime.Now;
         public ICollection<Comment> Comments { get; init; } = new List<Comment>();
+        public int UserId { get; init; }
+        public User User { get; set; }
     }
 
 }

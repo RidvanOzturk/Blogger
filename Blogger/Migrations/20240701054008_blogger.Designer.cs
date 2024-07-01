@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Blogger.Migrations
 {
     [DbContext(typeof(BlogContext))]
-    [Migration("20240627065730_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20240701054008_blogger")]
+    partial class blogger
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -69,7 +69,7 @@ namespace Blogger.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("UserId")
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -111,7 +111,9 @@ namespace Blogger.Migrations
                 {
                     b.HasOne("Blogger.Entities.User", null)
                         .WithMany("Posts")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Blogger.Entities.Post", b =>

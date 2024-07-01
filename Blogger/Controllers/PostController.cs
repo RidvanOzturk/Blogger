@@ -21,7 +21,7 @@ namespace Blogger.Controllers
         }
         public IActionResult AllPosts()
         {
-            var posts = _context.Posts.Include(p => p.Comments).ToList();
+            var posts = _context.Posts.Include(p => p.User).ToList();
             return View(posts);
         }
 

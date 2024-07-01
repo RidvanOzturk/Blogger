@@ -21,7 +21,7 @@
             {
                 <p>@comment.Text</p>
             }
-            <p>From By</p>
+            <p><small>Posted by @(post.User != null ? post.User.Username : "Unknown")</small></p>
         </div>
     </div>
 }
