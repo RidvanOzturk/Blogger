@@ -24,16 +24,19 @@
             {
                 <p>
                     @comment.Text <small>
-                        <a href="@Url.Action("DeleteComment","Comment",new {id = comment.Id })">
-    <img src="@Url.Content("~/Images/delete.png")" title="Delete" />
- </a>
+                        <form asp-action="DeleteComment" asp-controller="Comment" method="post" style="display:inline;">
+                            <input type="hidden" name="id" value="@comment.Id" />
+                            <button type="submit" style="background:none;border:none;">
+                                <img src="@Url.Content("~/Images/delete.png")" title="Delete" />
+                            </button>
+                        </form>
                     </small>
                 </p>
                 
             }
-           
 
-            <form asp-action="CreateComment" method="post">
+
+            <form asp-action="CreateComment" asp-controller="Comment" method="post">
                 <div class="form-group">
                     <label class="control-label">Add a Comment:</label>
                     <textarea name="text" class="form-control" rows="3"></textarea>

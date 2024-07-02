@@ -33,12 +33,13 @@ namespace Blogger.Controllers
                 _context.Comments.Add(comment);
                 _context.SaveChanges();
 
-                return RedirectToAction("AllPosts");
+                return RedirectToAction("AllPosts", "Post");
             }
 
             return RedirectToAction("Login", "Account"); 
         }
         [HttpDelete]
+        [HttpPost]
         public IActionResult DeleteComment(int id)
         {
             var comment = _context.Comments.Find(id);
@@ -51,8 +52,9 @@ namespace Blogger.Controllers
             _context.Comments.Remove(comment);
             _context.SaveChanges();
 
-            return RedirectToAction("AllPosts");
+            return RedirectToAction("AllPosts", "Post");
         }
+
 
 
 
