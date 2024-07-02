@@ -32,6 +32,23 @@ namespace Blogger.Controllers
                 .ToList();
             return View(posts);
         }
+        [HttpPost]
+        public IActionResult Delete(int id)
+        {
+            var post = _context.Posts.Find(id);
+
+            if (post == null)
+            {
+                return NotFound();
+            }
+
+            _context.Posts.Remove(post);
+            _context.SaveChanges();
+
+            return RedirectToAction("AllPosts");
+        }
+
+
 
         [HttpPost]
         public IActionResult Create(PostCreateRequest request)
@@ -55,7 +72,7 @@ namespace Blogger.Controllers
                     user.Posts.Add(post);
                     _context.SaveChanges();
 
-                    return RedirectToAction("Welcome", "Welcome");
+                    return RedirectToAction("AllPosts");
                 }
                 else
                 {

@@ -10,6 +10,9 @@
     <div class="card mb-3">
         <div class="card-header">
             <h3>@post.Title</h3>
+            <form asp-action="Delete" asp-route-id="@post.Id" method="post" class="float-end">
+                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+            </form>
         </div>
         <div class="card-body">
             <p>@post.Content</p>
