@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Security.Claims;
+
 namespace Blogger.Controllers
 {
     public class PostController : Controller
@@ -15,16 +16,19 @@ namespace Blogger.Controllers
         {
             _context = context;
         }
+
         [Authorize]
         public IActionResult PostContent()
         {
             return View();
         }
+
         public IActionResult AllPosts()
         {
             var posts = _context.Posts
                 .AsNoTracking()
                 .Include(post => post.User)
+                .Include(post => post.Comments)
                 .ToList();
             return View(posts);
         }
@@ -37,21 +41,14 @@ namespace Blogger.Controllers
                 Title = request.Title,
                 Content = request.Content
             };
-            // var data = new Blogger.Entities.Post();
-            //   var user = _context.Users.First(x => x.Username == );
-            // Console.WriteLine(user.Username);
 
             if (ModelState.IsValid)
             {
-                //Kullanıcının kimlik bilgisiyle aldım.
                 var username = User.Identity.Name;
-                Console.WriteLine(username);
-                
-                //User'ı db'de buldum.
                 var user = _context.Users
                     .FirstOrDefault(x => x.Username == username);
 
-                if (user != null) 
+                if (user != null)
                 {
                     post.PostedDate = DateTime.Now;
                     post.UserId = user.Id;
@@ -59,14 +56,54 @@ namespace Blogger.Controllers
                     _context.SaveChanges();
 
                     return RedirectToAction("Welcome", "Welcome");
-
                 }
                 else
                 {
                     ModelState.AddModelError("", "Kullanıcı bulunamadı.");
                 }
             }
-            return View("PostContent", post);
+            return View("AllPosts", post);
+        }
+
+        [HttpPost]
+        public IActionResult CreateComment(int postId, string text)
+        {
+            if (ModelState.IsValid)
+            {
+                var username = User.Identity.Name;
+                var user = _context.Users
+                    .FirstOrDefault(x => x.Username == username);
+
+                if (user != null)
+                {
+                    var post = _context.Posts.FirstOrDefault(p => p.Id == postId);
+
+                    if (post != null)
+                    {
+                        var comment = new Comment
+                        {
+                            Text = text,
+                            CommentedDate = DateTime.Now,
+                            PostId = post.Id,
+                            Post = post
+                        };
+
+                        post.Comments.Add(comment);
+                        _context.SaveChanges();
+
+                        return RedirectToAction("AllPosts");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Post bulunamadı.");
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Kullanıcı bulunamadı.");
+                }
+            }
+            return RedirectToAction("AllPosts");
         }
     }
 }

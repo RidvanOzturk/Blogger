@@ -19,9 +19,19 @@
             <p>Comments (@post.Comments.Count)</p>
             @foreach (var comment in post.Comments)
             {
-                <p>@comment.Text</p>
+                <p><u>@comment.Text</u></p>
             }
             <p><small>Posted by @(post.User != null ? post.User.Username : "Unknown")</small></p>
+
+            <form asp-action="CreateComment" method="post">
+                <div class="form-group">
+                    <label class="control-label">Add a Comment:</label>
+                    <textarea name="text" class="form-control" rows="3"></textarea>
+                    <span class="text-danger"></span>
+                </div>
+                <input type="hidden" name="postId" value="@post.Id" />
+                <button type="submit" class="btn btn-primary mt-2">Submit</button>
+            </form>
         </div>
     </div>
 }

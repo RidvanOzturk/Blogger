@@ -33,16 +33,21 @@ namespace Blogger.Migrations
                     b.Property<DateTime>("CommentedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("PostId")
+                    b.Property<int>("PostId")
                         .HasColumnType("int");
 
                     b.Property<string>("Text")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("PostId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Comments");
                 });
@@ -99,18 +104,32 @@ namespace Blogger.Migrations
 
             modelBuilder.Entity("Blogger.Entities.Comment", b =>
                 {
-                    b.HasOne("Blogger.Entities.Post", null)
+                    b.HasOne("Blogger.Entities.Post", "Post")
                         .WithMany("Comments")
-                        .HasForeignKey("PostId");
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Blogger.Entities.User", "User")
+                        .WithMany("Comments")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Blogger.Entities.Post", b =>
                 {
-                    b.HasOne("Blogger.Entities.User", null)
+                    b.HasOne("Blogger.Entities.User", "User")
                         .WithMany("Posts")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Blogger.Entities.Post", b =>
@@ -120,6 +139,8 @@ namespace Blogger.Migrations
 
             modelBuilder.Entity("Blogger.Entities.User", b =>
                 {
+                    b.Navigation("Comments");
+
                     b.Navigation("Posts");
                 });
 #pragma warning restore 612, 618
