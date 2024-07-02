@@ -32,8 +32,8 @@ namespace Blogger.Controllers
                 .ToList();
             return View(posts);
         }
-        [HttpPost]
-        public IActionResult Delete(int id)
+        [HttpDelete]
+        public IActionResult DeletePost(int id)
         {
             var post = _context.Posts.Find(id);
 
@@ -47,7 +47,7 @@ namespace Blogger.Controllers
 
             return RedirectToAction("AllPosts");
         }
-
+       
 
 
         [HttpPost]
@@ -82,31 +82,7 @@ namespace Blogger.Controllers
             return View("AllPosts", post);
         }
 
-        [HttpPost]
-        public IActionResult CreateComment(int postId, string text)
-        {
-            var username = User.Identity.Name;
-            var user = _context.Users.
-                FirstOrDefault(x => x.Username == username);
-
-            if (user != null)
-            {
-                var comment = new Comment
-                {
-                    Text = text,
-                    CommentedDate = DateTime.Now,
-                    UserId = user.Id, 
-                    PostId = postId  
-                };
-
-                _context.Comments.Add(comment);
-                _context.SaveChanges();
-
-                return RedirectToAction("AllPosts");
-            }
-
-            return RedirectToAction("Login", "Account"); // Kullanıcı doğrulanamadıysa giriş sayfasına yönlendir
-        }
+       
 
     }
 }

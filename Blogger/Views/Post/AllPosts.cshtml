@@ -10,7 +10,7 @@
     <div class="card mb-3">
         <div class="card-header">
             <h3>@post.Title</h3>
-            <form asp-action="Delete" asp-route-id="@post.Id" method="post" class="float-end">
+            <form asp-action="DeletePost" asp-route-id="@post.Id" method="post" class="float-end">
                 <button type="submit" class="btn btn-danger btn-sm">Delete</button>
             </form>
         </div>
@@ -22,7 +22,14 @@
             <p>Comments (@post.Comments.Count)</p>
             @foreach (var comment in post.Comments)
             {
-                <p><u>@comment.Text</u></p>
+                <p>
+                    @comment.Text <small>
+                        <a href="@Url.Action("DeleteComment","Comment",new {id = comment.Id })">
+    <img src="@Url.Content("~/Images/delete.png")" title="Delete" />
+ </a>
+                    </small>
+                </p>
+                
             }
            
 
