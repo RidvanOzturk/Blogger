@@ -85,42 +85,28 @@ namespace Blogger.Controllers
         [HttpPost]
         public IActionResult CreateComment(int postId, string text)
         {
-            if (ModelState.IsValid)
+            var username = User.Identity.Name;
+            var user = _context.Users.
+                FirstOrDefault(x => x.Username == username);
+
+            if (user != null)
             {
-                var username = User.Identity.Name;
-                var user = _context.Users
-                    .FirstOrDefault(x => x.Username == username);
-
-                if (user != null)
+                var comment = new Comment
                 {
-                    var post = _context.Posts.FirstOrDefault(p => p.Id == postId);
+                    Text = text,
+                    CommentedDate = DateTime.Now,
+                    UserId = user.Id, 
+                    PostId = postId  
+                };
 
-                    if (post != null)
-                    {
-                        var comment = new Comment
-                        {
-                            Text = text,
-                            CommentedDate = DateTime.Now,
-                            PostId = post.Id,
-                            Post = post
-                        };
+                _context.Comments.Add(comment);
+                _context.SaveChanges();
 
-                        post.Comments.Add(comment);
-                        _context.SaveChanges();
-
-                        return RedirectToAction("AllPosts");
-                    }
-                    else
-                    {
-                        ModelState.AddModelError("", "Post bulunamadı.");
-                    }
-                }
-                else
-                {
-                    ModelState.AddModelError("", "Kullanıcı bulunamadı.");
-                }
+                return RedirectToAction("AllPosts");
             }
-            return RedirectToAction("AllPosts");
+
+            return RedirectToAction("Login", "Account"); // Kullanıcı doğrulanamadıysa giriş sayfasına yönlendir
         }
+
     }
 }

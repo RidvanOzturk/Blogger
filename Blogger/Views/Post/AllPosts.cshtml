@@ -16,7 +16,7 @@
         </div>
         <div class="card-body">
             <p>@post.Content</p>
-            <p><small>Posted on: @post.PostedDate</small></p>
+            <p><small>Posted on: @post.PostedDate <u>Posted by @(post.User != null ? post.User.Username : "Unknown")</u></small></p>
         </div>
         <div class="card-footer">
             <p>Comments (@post.Comments.Count)</p>
@@ -24,7 +24,7 @@
             {
                 <p><u>@comment.Text</u></p>
             }
-            <p><small>Posted by @(post.User != null ? post.User.Username : "Unknown")</small></p>
+           
 
             <form asp-action="CreateComment" method="post">
                 <div class="form-group">
