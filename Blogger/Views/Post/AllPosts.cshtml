@@ -23,14 +23,14 @@
             @foreach (var comment in post.Comments)
             {
                 <p>
-                    @comment.Text <small>
+                    @comment.Text 
                         <form asp-action="DeleteComment" asp-controller="Comment" method="post" style="display:inline;">
                             <input type="hidden" name="id" value="@comment.Id" />
                             <button type="submit" style="background:none;border:none;">
-                                <img src="@Url.Content("~/Images/delete.png")" title="Delete" />
+                                <img alt="delete" src="../Images/delete.png" style="width:100px; height:100px;" />
                             </button>
                         </form>
-                    </small>
+                    
                 </p>
                 
             }
