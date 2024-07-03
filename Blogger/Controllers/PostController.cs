@@ -42,12 +42,14 @@ namespace Blogger.Controllers
         public IActionResult AllPosts()
         {
             var posts = _context.Posts
-                .AsNoTracking()
-                .Include(post => post.User)
-                .Include(post => post.Comments)
-                .ToList();
+                                .Include(p => p.User)
+                                .Include(p => p.Comments)
+                                .ThenInclude(c => c.User)
+                                .ToList();
+
             return View(posts);
         }
+
         [HttpDelete]
         public IActionResult DeletePost(int id)
         {
