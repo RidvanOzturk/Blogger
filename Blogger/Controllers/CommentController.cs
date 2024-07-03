@@ -1,5 +1,6 @@
 ﻿using Blogger.Data;
 using Blogger.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -53,7 +54,7 @@ namespace Blogger.Controllers
 
             if (comment.UserId != user.Id)
             {
-                return Unauthorized();
+                return RedirectToAction("Welcome", "Welcome");
             }
 
             _context.Comments.Remove(comment);
