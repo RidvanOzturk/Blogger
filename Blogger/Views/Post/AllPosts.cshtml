@@ -23,22 +23,23 @@
         </div>
         <div class="card-footer">
             <p>Comments (@post.Comments.Count)</p>
-            @if (User.Identity.IsAuthenticated){
+            
             @foreach (var comment in post.Comments)
             {
                 <p>
                     @comment.Text
-                        @if (User.Identity.Name == post.User.Username){
+                    @if (User.Identity.Name == post.User.Username)
+                    {
                         <form asp-action="DeleteComment" asp-controller="Comment" method="post" style="display:inline;">
                             <input type="hidden" name="id" value="@comment.Id" />
                             <button type="submit" style="background:none;border:none;">
                                 <img alt="delete" src="../Images/delete.png" style="width:100px; height:100px;" />
                             </button>
                         </form>
-                        }
+                    }
+
                 </p>
                 
-            }
             }
             <form asp-action="CreateComment" asp-controller="Comment" method="post">
                 <div class="form-group">
