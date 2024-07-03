@@ -17,6 +17,22 @@ namespace Blogger.Controllers
             _context = context;
         }
 
+        public IActionResult PostDetail(int id)
+        {
+            var post = _context.Posts
+                .Include(p => p.User)
+                .Include(p => p.Comments)
+                    .ThenInclude(c => c.User)
+                .FirstOrDefault(p => p.Id == id);
+
+            if (post == null)
+            {
+                return NotFound();
+            }
+
+            return View(post);
+        }
+
         [Authorize]
         public IActionResult PostContent()
         {

@@ -1,0 +1,45 @@
+﻿@model Blogger.Entities.Post
+
+<div class="card mb-3">
+    <div class="card-header">
+        <h3>@Model.Title</h3>
+        @if (User.Identity.Name == Model.User.Username)
+        {
+            <form asp-action="DeletePost" asp-route-id="@Model.Id" method="post" class="float-end">
+                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+            </form>
+        }
+    </div>
+    <div class="card-body">
+        <p>@Model.Content</p>
+        <p><small>Posted on: @Model.PostedDate <u>Posted by @(Model.User != null ? Model.User.Username : "Unknown")</u></small></p>
+    </div>
+    <div class="card-footer">
+        <p>Comments (@Model.Comments.Count)</p>
+
+        @foreach (var comment in Model.Comments)
+        {
+            <p>
+                @comment.Text
+                @if (User.Identity.Name == comment.User.Username)
+                {
+                    <form asp-action="DeleteComment" asp-controller="Comment" method="post" style="display:inline;">
+                        <input type="hidden" name="id" value="@comment.Id" />
+                        <button type="submit" style="background:none;border:none;">
+                            <img alt="delete" src="~/Images/delete.png" style="width:20px; height:20px;" />
+                        </button>
+                    </form>
+                }
+            </p>
+        }
+        <form asp-action="CreateComment" asp-controller="Comment" method="post">
+            <div class="form-group">
+                <label class="control-label">Add a Comment:</label>
+                <textarea name="text" class="form-control" rows="3"></textarea>
+                <span class="text-danger"></span>
+            </div>
+            <input type="hidden" name="postId" value="@Model.Id" />
+            <button type="submit" class="btn btn-primary mt-2">Submit</button>
+        </form>
+    </div>
+</div>
