@@ -38,7 +38,7 @@ namespace Blogger.Controllers
 
             return RedirectToAction("Login", "Account"); 
         }
-        [HttpDelete]
+        [HttpPost]
         public IActionResult DeleteComment(int id)
         {
             var comment = _context.Comments.Find(id);
@@ -49,12 +49,12 @@ namespace Blogger.Controllers
             }
 
             var username = User.Identity.Name;
-            //var user = _context.Users.FirstOrDefault(x => x.Username == username);
+            var user = _context.Users.FirstOrDefault(x => x.Username == username);
 
-            //if (comment.UserId != user.Id)
-            //{
-            //    return Unauthorized(); 
-            //}
+            if (comment.UserId != user.Id)
+            {
+                return Unauthorized();
+            }
 
             _context.Comments.Remove(comment);
             _context.SaveChanges();
