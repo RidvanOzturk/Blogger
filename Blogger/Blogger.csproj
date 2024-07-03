@@ -26,4 +26,8 @@
     <Folder Include="Views\Comment\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="wwwroot\Images\delete.png" />
+  </ItemGroup>
+
 </Project>

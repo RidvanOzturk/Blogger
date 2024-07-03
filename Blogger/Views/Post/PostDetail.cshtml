@@ -1,5 +1,7 @@
 ﻿@model Blogger.Entities.Post
-
+@{
+    ViewData["Title"] = "Post Detail";
+}
 <div class="card mb-3">
     <div class="card-header">
         <h3>@Model.Title</h3>
@@ -19,16 +21,17 @@
 
         @foreach (var comment in Model.Comments)
         {
+
             <p>
                 @comment.Text
-                @if (User.Identity.Name == comment.User.Username)
+                @if (User.Identity.Name == Model.User.Username)
                 {
-                    <form asp-action="DeleteComment" asp-controller="Comment" method="post" style="display:inline;">
-                        <input type="hidden" name="id" value="@comment.Id" />
-                        <button type="submit" style="background:none;border:none;">
-                            <img alt="delete" src="~/Images/delete.png" style="width:20px; height:20px;" />
-                        </button>
-                    </form>
+                <form asp-action="DeleteComment" asp-controller="Comment" method="post" style="float: right; margin-left: 10px;">
+                    <input type="hidden" name="id" value="@comment.Id" />
+                    <button type="submit" style="background: none; border: none;">
+                        <img alt="delete" src="~/Images/delete.png" style="width: 20px; height: 20px;" />
+                    </button>
+                </form>
                 }
             </p>
         }

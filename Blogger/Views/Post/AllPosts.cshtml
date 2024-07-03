@@ -26,19 +26,18 @@
             
             @foreach (var comment in post.Comments)
             {
-                <p>
+                <p style="display: inline-block;">
                     @comment.Text
-                    @if (User.Identity.Name == post.User.Username)
-                    {
-                        <form asp-action="DeleteComment" asp-controller="Comment" method="post" style="display:inline;">
-                            <input type="hidden" name="id" value="@comment.Id" />
-                            <button type="submit" style="background:none;border:none;">
-                                <img alt="delete" src="../Images/delete.png" style="width:100px; height:100px;" />
-                            </button>
-                        </form>
+                    @if (User.Identity.Name == post.User.Username){
+                    <form asp-action="DeleteComment" asp-controller="Comment" method="post" style="display: inline-block; margin-left: 10px;">
+                        <input type="hidden" name="id" value="@comment.Id" />
+                        <button type="submit" style="background: none; border: none;">
+                            <img alt="delete" src="~/Images/delete.png" style="width: 20px; height: 20px;" />
+                        </button>
+                    </form>
                     }
-
                 </p>
+
                 
             }
             <form asp-action="CreateComment" asp-controller="Comment" method="post">
