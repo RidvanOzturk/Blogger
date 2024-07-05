@@ -1,7 +1,27 @@
-﻿
+﻿@model Blogger.Entities.User
+
 @{
     ViewData["Title"] = "ProfileDetail";
 }
 
-<h1>ProfileDetail</h1>
+
+<h1>Username: @Model.Username</h1>
+
+<h2>Posts</h2>
+@foreach (var post in Model.Posts)
+{
+    <div>
+        <h3>@post.Title</h3>
+        <p>@post.Content</p>
+    </div>
+}
+
+<h2>Comments</h2>
+@foreach (var comment in Model.Comments)
+{
+    <div>
+        <p>@comment.Text</p>
+    </div>
+}
+
 

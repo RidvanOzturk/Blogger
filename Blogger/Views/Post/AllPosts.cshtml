@@ -9,7 +9,7 @@
 {
     <div class="card mb-3">
         <div class="card-header">
-            <h4><a asp-action="PostDetail" asp-route-id="@post.Id">@post.Title</a></h4>
+            <h4><a asp-action="PostDetail"  asp-route-id="@post.Id">@post.Title</a></h4>
             @if (User.Identity.Name == post.User.Username)
             { 
             <form asp-action="DeletePost" asp-route-id="@post.Id" method="post" class="float-end">
@@ -19,7 +19,11 @@
         </div>
         <div class="card-body">
             <b><p>@post.Content</p></b>
-            <p><small>Posted on: @post.PostedDate <u>Posted by @(post.User != null ? post.User.Username : "Unknown")</u></small></p>
+            <p><small>Posted on: @post.PostedDate
+                    <a asp-action="ProfileDetail" asp-controller="Profile" asp-route-id="@post.User.Id">
+                <u>Posted by @(post.User != null ? post.User.Username : "Unknown")</u>
+                    </a>
+                </small></p>
         </div>
         <div class="card-footer">
             <p>Comments (@post.Comments.Count)</p>
