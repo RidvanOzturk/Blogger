@@ -50,16 +50,17 @@ namespace Blogger.Controllers
             return View(posts);
         }
 
-        [HttpDelete]
+        [HttpPost]
         public IActionResult DeletePost(int id)
         {
-            var post = _context.Posts.Find(id);
-
+            var post = _context.Posts
+                .Include(p => p.Comments)
+                .FirstOrDefault(p => p.Id == id);
             if (post == null)
             {
                 return NotFound();
             }
-
+            _context.Comments.RemoveRange(post.Comments);
             _context.Posts.Remove(post);
             _context.SaveChanges();
 
