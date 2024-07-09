@@ -9,9 +9,17 @@
 <h4>Password: ******</h4>
 </span>
 <span>
-    <a >
-    Change your Username and Password
-    </a>
+    <h2>Change Username</h2>
+
+    <form asp-action="ChangeUsername" method="post">
+        <div class="form-group">
+            <label asp-for="Username" class="control-label"></label>
+            <input asp-for="Username" class="form-control" />
+            <span asp-validation-for="Username" class="text-danger"></span>
+        </div>
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
 </span>
 
 <h2>Posts</h2>
@@ -24,11 +32,19 @@
 }
 
 <h2>Comments</h2>
+
 @foreach (var comment in Model.Comments)
-{
-    <div>
-        <p>@comment.Text</p>
-    </div>
+{   
+    @if (comment == null)
+    {
+        <p>You have not any comments.</p>
+    }
+    else
+    {
+        <div>
+            <p>@comment.Text</p>
+        </div>
+    }
 }
 
 
