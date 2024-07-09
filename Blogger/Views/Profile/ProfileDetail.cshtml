@@ -4,8 +4,15 @@
     ViewData["Title"] = "ProfileDetail";
 }
 
-
-<h1>Username: @Model.Username</h1>
+<span>
+<h2>Username: @Model.Username</h2>
+<h4>Password: ******</h4>
+</span>
+<span>
+    <a >
+    Change your Username and Password
+    </a>
+</span>
 
 <h2>Posts</h2>
 @foreach (var post in Model.Posts)

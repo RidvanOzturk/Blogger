@@ -21,5 +21,16 @@ namespace Blogger.Controllers
 
             return View(user);
         }
+
+        [HttpPost]
+        public IActionResult ChangeUrId(int id)
+        {
+            var user = _context.Users.FirstOrDefault(u => u.Id == id);
+        }
+        [HttpPost]
+        public IActionResult ChangeUrPassword(int id)
+        {
+            var user = _context.Users.FirstOrDefault(u => u.Id == id);
+        }
     }
 }
