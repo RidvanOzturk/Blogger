@@ -1,4 +1,4 @@
-﻿namespace Blogger.Requests
+﻿namespace Blogger.Models
 {
     public class ChangePasswordViewModel
     {

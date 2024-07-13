@@ -1,15 +1,16 @@
-﻿using BCrypt.Net;
-using Blogger.Data;
+﻿using Blogger.Data;
 using Blogger.Entities;
-using Blogger.Requests;
+using Blogger.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+
 
 namespace Blogger.Controllers
 {
     public class ProfileController : Controller
     {
         private readonly BlogContext _context;
+
         public ProfileController(BlogContext context)
         {
             _context = context;
@@ -27,17 +28,6 @@ namespace Blogger.Controllers
                 return NotFound();
             }
 
-            return View(user);
-        }
-
-        [HttpGet]
-        public IActionResult ChangeUsername(int id)
-        {
-            var user = _context.Users.FirstOrDefault(u => u.Id == id);
-            if (user == null)
-            {
-                return NotFound();
-            }
             return View(user);
         }
 
@@ -59,18 +49,7 @@ namespace Blogger.Controllers
 
                 return RedirectToAction("ProfileDetail", new { id = model.Id });
             }
-            return View(model);
-        }
-
-        [HttpGet]
-        public IActionResult ChangePassword(int id)
-        {
-            var user = _context.Users.FirstOrDefault(u => u.Id == id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            return View(new ChangePasswordViewModel { Id = user.Id });
+            return View("ProfileDetail", model);
         }
 
         [HttpPost]
@@ -91,7 +70,7 @@ namespace Blogger.Controllers
 
                 return RedirectToAction("ProfileDetail", new { id = model.Id });
             }
-            return View(model);
+            return View("ProfileDetail", model);
         }
     }
 }

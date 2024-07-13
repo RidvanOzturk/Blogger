@@ -4,13 +4,15 @@
     ViewData["Title"] = "ProfileDetail";
 }
 
-<span>
-<h2>Username: @Model.Username</h2>
-<h4>Password: ******</h4>
-</span>
-<span>
-    <h2>Change Username</h2>
+<h2>Profile Detail</h2>
 
+<div>
+    <h4>Username: @Model.Username</h4>
+    <h4>Password: ******</h4>
+</div>
+
+<div>
+    <h2>Change Username</h2>
     <form asp-action="ChangeUsername" method="post">
         <div class="form-group">
             <label asp-for="Username" class="control-label"></label>
@@ -20,7 +22,12 @@
         <input type="hidden" asp-for="Id" />
         <button type="submit" class="btn btn-primary">Save</button>
     </form>
-</span>
+</div>
+
+<div>
+    <h2>Change Password</h2>
+    <partial name="_ChangePasswordPartial" model="new Blogger.Models.ChangePasswordViewModel { Id = Model.Id }" />
+</div>
 
 <h2>Posts</h2>
 @foreach (var post in Model.Posts)
@@ -32,19 +39,16 @@
 }
 
 <h2>Comments</h2>
-
-@foreach (var comment in Model.Comments)
-{   
-    @if (comment == null)
-    {
-        <p>You have not any comments.</p>
-    }
-    else
+@if (!Model.Comments.Any())
+{
+    <p>You have not any comments.</p>
+}
+else
+{
+    @foreach (var comment in Model.Comments)
     {
         <div>
             <p>@comment.Text</p>
         </div>
     }
 }
-
-
