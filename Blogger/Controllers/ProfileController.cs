@@ -26,6 +26,7 @@ namespace Blogger.Controllers
                 return NotFound();
             }
 
+            ViewBag.ChangePasswordModel = new ChangePasswordViewModel { Id = user.Id };
             return View(user);
         }
 
@@ -68,7 +69,7 @@ namespace Blogger.Controllers
 
                 return RedirectToAction("ProfileDetail", new { id = model.Id });
             }
-            return View("ProfileDetail", model);
+            return View("ProfileDetail", new { id = model.Id });
         }
     }
 }
