@@ -3,17 +3,15 @@ using Blogger.Entities;
 using Blogger.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Blogger.Controllers
 {
-    public class ProfileController : Controller
+    public class ProfileController : BaseController
     {
-        private readonly BlogContext _context;
-
-        public ProfileController(BlogContext context)
+        public ProfileController(BlogContext context) : base(context)
         {
-            _context = context;
         }
 
         public IActionResult ProfileDetail(int id)

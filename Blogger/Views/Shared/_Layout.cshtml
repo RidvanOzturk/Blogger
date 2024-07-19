@@ -33,7 +33,7 @@
                         @if (User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
-                                @Html.ActionLink("Profile", "ProfileDetail")
+                                <a class="btn btn-primary" href="@Url.Action("ProfileDetail", "Profile", new { id = ViewBag.UserId })">Profile</a>
                             </li>
                             <li class="nav-item">
                                 <form asp-area="" asp-controller="Account" asp-action="Logout" method="post" id="logoutForm">
