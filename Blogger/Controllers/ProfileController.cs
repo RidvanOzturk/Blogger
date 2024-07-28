@@ -69,7 +69,12 @@ namespace Blogger.Controllers
 
                 return RedirectToAction("ProfileDetail", new { id = model.Id });
             }
-            return View("ProfileDetail", new { id = model.Id });
+
+            ViewBag.ChangePasswordModel = model;
+            return View("ProfileDetail", _context.Users
+                .Include(u => u.Posts)
+                .Include(u => u.Comments)
+                .FirstOrDefault(u => u.Id == model.Id));
         }
     }
 }
