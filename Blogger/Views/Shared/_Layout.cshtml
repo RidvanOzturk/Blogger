@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using System.Security.Claims
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -33,7 +35,9 @@
                         @if (User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
-                                <a class="btn btn-primary" href="@Url.Action("ProfileDetail", "Profile", new { id = ViewBag.UserId })">Profile</a>
+                                <a class="btn btn-primary" href="@Url.Action("ProfileDetail", "Profile", new { id = User.FindFirstValue(ClaimTypes.NameIdentifier) })">Profile</a>
+
+
                             </li>
                             <li class="nav-item">
                                 <form asp-area="" asp-controller="Account" asp-action="Logout" method="post" id="logoutForm">
