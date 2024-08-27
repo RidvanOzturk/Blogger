@@ -4,6 +4,7 @@ using Blogger.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Blogger.Controllers
@@ -14,21 +15,32 @@ namespace Blogger.Controllers
         {
         }
 
-        public IActionResult ProfileDetail(int id)
+        public IActionResult ProfileDetail()
         {
-            var user = _context.Users
-                .Include(u => u.Posts)
-                .Include(u => u.Comments)
-                .FirstOrDefault(u => u.Id == id);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if (user == null)
+            if (int.TryParse(userId, out int id))
             {
-                return NotFound();
+                var user = _context.Users
+                    .Include(u => u.Posts)
+                    .Include(u => u.Comments)
+                    .FirstOrDefault(u => u.Id == id);
+
+                if (user == null)
+                {
+                    return NotFound();
+                }
+
+                ViewBag.ChangePasswordModel = new ChangePasswordViewModel { Id = user.Id };
+                return View(user);
             }
 
-            ViewBag.ChangePasswordModel = new ChangePasswordViewModel { Id = user.Id };
-            return View(user);
+            return RedirectToAction("Login", "Account"); 
         }
+
+
+
+
 
         [HttpPost]
         public async Task<IActionResult> ChangeUsername(User model)

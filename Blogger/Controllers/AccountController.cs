@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Blogger.Models;
 
 namespace Blogger.Controllers
 {
@@ -17,22 +18,29 @@ namespace Blogger.Controllers
         }
 
         [HttpPost]
-        public IActionResult Login(string username, string password)
+        public IActionResult Login(LoginViewModel model)
         {
-            var user = _context.Users.SingleOrDefault(u => u.Username == username);
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
 
-            if (user != null && BCrypt.Net.BCrypt.Verify(password, user.Password))
+            var user = _context.Users.SingleOrDefault(u => u.Username == model.Username);
+
+            if (user != null && BCrypt.Net.BCrypt.Verify(model.Password, user.Password))
             {
                 var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, user.Username)
-                };
+        {
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()), 
+
+            new Claim(ClaimTypes.Name, user.Username)
+        };
 
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
                 var authProperties = new AuthenticationProperties
                 {
-                    IsPersistent = true // Remember me
+                    IsPersistent = model.RememberMe 
                 };
 
                 HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
@@ -41,10 +49,12 @@ namespace Blogger.Controllers
             }
             else
             {
+                // Hatalı giriş olursa buraya düşsün
                 ModelState.AddModelError("", "Invalid username or password");
-                return View();
+                return View(model);
             }
         }
+
 
         [HttpPost]
         public IActionResult SignUp(string username, string password)
