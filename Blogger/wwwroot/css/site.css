@@ -6,6 +6,9 @@ html {
   html {
     font-size: 16px;
   }
+    .navbar-collapse {
+        background-color: #f8f9fa; 
+    }
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
@@ -53,5 +56,34 @@ body {
         width: 20px;
         height: 20px;
     }
+.navbar {
+    background-color: #f8f9fa; 
+}
+
+.navbar-brand {
+    font-weight: bold; 
+}
+
+.nav-link {
+    color: #007bff;
+}
+
+    .nav-link:hover {
+        color: #0056b3;
+    }
+
+/* Footer */
+.footer {
+    background-color: #343a40;
+    color: #ffffff; 
+}
+
+    .footer a {
+        color: #ffffff;
+    }
+
+        .footer a:hover {
+            color: #cccccc; 
+        }
 
 </style >
