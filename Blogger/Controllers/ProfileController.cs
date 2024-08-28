@@ -15,28 +15,45 @@ namespace Blogger.Controllers
         {
         }
 
-        public IActionResult ProfileDetail()
+        public IActionResult ProfileDetail(int? id)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            int userId;
 
-            if (int.TryParse(userId, out int id))
+            if (id.HasValue)
             {
-                var user = _context.Users
-                    .Include(u => u.Posts)
-                    .Include(u => u.Comments)
-                    .FirstOrDefault(u => u.Id == id);
-
-                if (user == null)
+                userId = id.Value;
+            }
+            else
+            {
+                var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (!int.TryParse(currentUserId, out userId))
                 {
-                    return NotFound();
+                    return RedirectToAction("Login", "Account");
                 }
+            }
 
+            var user = _context.Users
+                .Include(u => u.Posts)
+                .Include(u => u.Comments)
+                .FirstOrDefault(u => u.Id == userId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            if (!id.HasValue)
+            {
                 ViewBag.ChangePasswordModel = new ChangePasswordViewModel { Id = user.Id };
                 return View(user);
             }
-
-            return RedirectToAction("Login", "Account"); 
+            else
+            {
+                ViewBag.IsReadOnly = true;
+                return View("ViewProfile", user);
+            }
         }
+
 
 
 

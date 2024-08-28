@@ -1,0 +1,44 @@
+﻿@model Blogger.Entities.User
+
+@{
+    ViewBag.Title = $"{Model.Username}'s Profile";
+}
+
+<h2>@Model.Username's Profile</h2>
+
+<h3>Posts</h3>
+@if (Model.Posts.Any())
+{
+    <ul>
+        @foreach (var post in Model.Posts)
+        {
+            <li>
+                <a asp-action="PostDetail" asp-route-id="@post.Id">@post.Title</a>
+                <p>@post.Content</p>
+                <small>@post.PostedDate.ToShortDateString()</small>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>No posts available.</p>
+}
+
+<h3>Comments</h3>
+@if (Model.Comments.Any())
+{
+    <ul>
+        @foreach (var comment in Model.Comments)
+        {
+            <li>
+                <p>@comment.Post.Content</p>
+                <small>@comment.CommentedDate.ToShortDateString()</small>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>No comments available.</p>
+}
