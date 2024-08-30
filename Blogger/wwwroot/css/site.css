@@ -1,7 +1,3 @@
-html {
-  font-size: 14px;
-}
-
 @media (min-width: 768px) {
   html {
     font-size: 16px;
@@ -15,14 +11,23 @@ html {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
-html {
-  position: relative;
-  min-height: 100%;
+html, body {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
 }
 
-body {
-  margin-bottom: 60px;
+.body-content {
+    flex: 1;
 }
+
+.fixed-bottom {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
 <style >
 .comments-section {
     margin-top: 20px;
@@ -57,7 +62,7 @@ body {
         height: 20px;
     }
 .navbar {
-    background-color: #f8f9fa; 
+    background-color: #343a40 !important;
 }
 
 .navbar-brand {
@@ -65,12 +70,13 @@ body {
 }
 
 .nav-link {
-    color: #007bff;
+    color: #ffffff !important;
 }
 
     .nav-link:hover {
-        color: #0056b3;
+        color: #f8f9fa !important;
     }
+
 
 /* Footer */
 .footer {

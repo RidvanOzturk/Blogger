@@ -15,44 +15,29 @@ namespace Blogger.Controllers
         {
         }
 
-        public IActionResult ProfileDetail(int? id)
+        public IActionResult ProfileDetail()
         {
-            int userId;
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if (id.HasValue)
+            if (int.TryParse(userId, out int id))
             {
-                userId = id.Value;
-            }
-            else
-            {
-                var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                if (!int.TryParse(currentUserId, out userId))
+                var user = _context.Users
+                    .Include(u => u.Posts)
+                    .Include(u => u.Comments)
+                    .FirstOrDefault(u => u.Id == id);
+
+                if (user == null)
                 {
-                    return RedirectToAction("Login", "Account");
+                    return NotFound();
                 }
-            }
 
-            var user = _context.Users
-                .Include(u => u.Posts)
-                .Include(u => u.Comments)
-                .FirstOrDefault(u => u.Id == userId);
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            if (!id.HasValue)
-            {
                 ViewBag.ChangePasswordModel = new ChangePasswordViewModel { Id = user.Id };
                 return View(user);
             }
-            else
-            {
-                ViewBag.IsReadOnly = true;
-                return View("ViewProfile", user);
-            }
+
+            return RedirectToAction("Login", "Account");
         }
+
 
 
 
@@ -81,29 +66,32 @@ namespace Blogger.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        public IActionResult ChangePassword(ChangePasswordViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var user = await _context.Users.FindAsync(model.Id);
+                var user = _context.Users.Find(model.Id);
+
                 if (user == null)
                 {
                     return NotFound();
                 }
 
                 user.Password = BCrypt.Net.BCrypt.HashPassword(model.NewPassword);
+                _context.SaveChanges();
 
-                _context.Update(user);
-                await _context.SaveChangesAsync();
-
-                return RedirectToAction("ProfileDetail", new { id = model.Id });
+                TempData["SuccessMessage"] = "Password changed successfully.";
+                return RedirectToAction("ProfileDetail");
             }
 
+            var currentUser = _context.Users
+                    .Include(u => u.Posts)
+                    .Include(u => u.Comments)
+                    .FirstOrDefault(u => u.Id == model.Id);
+
             ViewBag.ChangePasswordModel = model;
-            return View("ProfileDetail", _context.Users
-                .Include(u => u.Posts)
-                .Include(u => u.Comments)
-                .FirstOrDefault(u => u.Id == model.Id));
+            return View("ProfileDetail", currentUser);
         }
+
     }
 }
