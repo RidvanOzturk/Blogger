@@ -1,86 +1,67 @@
-﻿using Blogger.Data;
-using Blogger.Entities;
-using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
+﻿using Blogger.Models.Requests;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Blogger.Models;
+using Microsoft.AspNetCore.Mvc;
+using ServiceLayer.Contracts;
+using System.Security.Claims;
 
-namespace Blogger.Controllers
+namespace Blogger.Controllers;
+
+public class AccountController(IUserService userService) : Controller
 {
-    public class AccountController : Controller
+    [HttpPost]
+    public async Task<IActionResult> Login(LoginRequestModel model)
     {
-        private readonly BlogContext _context;
-
-        public AccountController(BlogContext context)
+        if (!ModelState.IsValid)
         {
-            _context = context;
+            return View(model);
         }
 
-        [HttpPost]
-        public IActionResult Login(LoginViewModel model)
+        var claims = await userService.ValidateUserAsync(model.Username, model.Password);
+
+        if (claims.Count != 0)
         {
-            if (!ModelState.IsValid)
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+            var authProperties = new AuthenticationProperties
             {
-                return View(model);
-            }
+                IsPersistent = model.RememberMe
+            };
 
-            var user = _context.Users.SingleOrDefault(u => u.Username == model.Username);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
 
-            if (user != null && BCrypt.Net.BCrypt.Verify(model.Password, user.Password))
-            {
-                var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()), 
-
-            new Claim(ClaimTypes.Name, user.Username)
-        };
-
-                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
-                var authProperties = new AuthenticationProperties
-                {
-                    IsPersistent = model.RememberMe 
-                };
-
-                HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
-
-                return RedirectToAction("Index", "Home");
-            }
-            else
-            {
-                // Hatalı giriş olursa buraya düşsün
-                ModelState.AddModelError("", "Invalid username or password");
-                return View(model);
-            }
+            return RedirectToAction("Index", "Home");
         }
+        else
+        {
+            // Hatalı giriş olursa buraya düşsün
+            ModelState.AddModelError("", "Invalid username or password");
+            return View(model);
+        }
+    }
 
 
-        [HttpPost]
-        public IActionResult SignUp(string username, string password)
-        {
-            var newUser = new User { Username = username, Password = BCrypt.Net.BCrypt.HashPassword(password) };
-            _context.Users.Add(newUser);
-            _context.SaveChanges();
+    [HttpPost]
+    public async Task<IActionResult> SignUp(string username, string password)
+    {
+        await userService.AddUserAsync(username, password);
+        return RedirectToAction("Login");
+    }
 
-            return RedirectToAction("Login");
-        }
-
-        [HttpGet]
-        public IActionResult SignUp()
-        {
-            return View();
-        }
-        [HttpGet]
-        public IActionResult Login()
-        {
-            return View();
-        }
-        [HttpPost]
-        public IActionResult Logout()
-        {
-            HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Login");
-        }
+    [HttpGet]
+    public IActionResult SignUp()
+    {
+        return View();
+    }
+    [HttpGet]
+    public IActionResult Login()
+    {
+        return View();
+    }
+    [HttpPost]
+    public async Task<IActionResult> Logout()
+    {
+        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        return RedirectToAction("Login");
     }
 }

@@ -1,32 +1,30 @@
-﻿using Blogger.Data;
+﻿using DataLayer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using System.Linq;
 
-namespace Blogger.Controllers
+namespace Blogger.Controllers;
+
+public class BaseController : Controller
 {
-    public class BaseController : Controller
+    protected readonly BlogContext _context;
+
+    public BaseController(BlogContext context)
     {
-        protected readonly BlogContext _context;
+        _context = context;
+    }
 
-        public BaseController(BlogContext context)
+    public override void OnActionExecuting(ActionExecutingContext context)
+    {
+        base.OnActionExecuting(context);
+
+        if (User.Identity.IsAuthenticated)
         {
-            _context = context;
-        }
+            var username = User.Identity.Name;
+            var user = _context.Users.FirstOrDefault(u => u.Username == username);
 
-        public override void OnActionExecuting(ActionExecutingContext context)
-        {
-            base.OnActionExecuting(context);
-
-            if (User.Identity.IsAuthenticated)
+            if (user != null)
             {
-                var username = User.Identity.Name;
-                var user = _context.Users.FirstOrDefault(u => u.Username == username);
-
-                if (user != null)
-                {
-                    ViewBag.UserId = user.Id;
-                }
+                ViewBag.UserId = user.Id;
             }
         }
     }

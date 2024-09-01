@@ -1,8 +1,8 @@
-using Microsoft.EntityFrameworkCore;
-using Blogger.Data;
+using DataLayer;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.Extensions.Logging;
-
+using Microsoft.EntityFrameworkCore;
+using ServiceLayer.Contracts;
+using ServiceLayer.Implementations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +10,8 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<BlogContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("BlogContext")));
+
+builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>

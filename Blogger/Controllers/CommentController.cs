@@ -1,5 +1,5 @@
-﻿using Blogger.Data;
-using Blogger.Entities;
+﻿using DataLayer;
+using DataLayer.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

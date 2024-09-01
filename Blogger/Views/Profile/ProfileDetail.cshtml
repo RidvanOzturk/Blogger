@@ -1,8 +1,8 @@
-﻿@model Blogger.Entities.User
+﻿@model DataLayer.Entities.User
 
 @{
     ViewData["Title"] = "ProfileDetail";
-    var changePasswordModel = new Blogger.Models.ChangePasswordViewModel { Id = Model.Id };
+    var changePasswordModel = new Blogger.Models.Responses.ChangePasswordResponseModel { Id = Model.Id };
 }
 
 <h2>Username: @Model.Username</h2>
