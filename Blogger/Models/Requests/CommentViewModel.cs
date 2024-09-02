@@ -1,4 +1,4 @@
-﻿namespace Blogger.Requests
+﻿namespace Blogger.Models.Requests
 {
     public class CommentViewModel
     {

@@ -1,11 +1,11 @@
 ﻿using DataLayer;
 using DataLayer.Entities;
-using Blogger.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Security.Claims;
+using Blogger.Models.Requests;
 
 namespace Blogger.Controllers
 {
