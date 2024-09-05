@@ -3,73 +3,63 @@ using DataLayer.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ServiceLayer.Contracts;
+using ServiceLayer.Implementations;
 
-namespace Blogger.Controllers
+namespace Blogger.Controllers;
+
+public class CommentController(ICommentService commentService) : Controller
 {
-    public class CommentController : Controller
+    
+
+    [HttpPost]
+    public async Task<IActionResult> CreateComment(int postId, string text)
     {
-        private readonly BlogContext _context;
-        public CommentController(BlogContext context)
+        var username = User.Identity.Name;
+
+        if (username == null)
         {
-            _context = context;
+            return RedirectToAction("Login", "Account");
         }
 
-        [HttpPost]
-        public IActionResult CreateComment(int postId, string text)
+        var result = await commentService.CreateCommentAsync(postId, text, username);
+
+        if (result)
         {
-            var username = User.Identity.Name;
-            var user = _context.Users.
-                FirstOrDefault(x => x.Username == username);
-
-            if (user != null)
-            {
-                var comment = new Comment
-                {
-                    Text = text,
-                    CommentedDate = DateTime.Now,
-                    UserId = user.Id,
-                    PostId = postId
-                };
-
-                _context.Comments.Add(comment);
-                _context.SaveChanges();
-
-                return RedirectToAction("AllPosts", "Post");
-            }
-
-            return RedirectToAction("Login", "Account"); 
-        }
-        [HttpPost]
-        public IActionResult DeleteComment(int id)
-        {
-            var comment = _context.Comments.Find(id);
-
-            if (comment == null)
-            {
-                return NotFound();
-            }
-
-            var username = User.Identity.Name;
-            var user = _context.Users.FirstOrDefault(x => x.Username == username);
-
-            if (comment.UserId != user.Id)
-            {
-                return RedirectToAction("Welcome", "Welcome");
-            }
-
-            _context.Comments.Remove(comment);
-            _context.SaveChanges();
-
             return RedirectToAction("AllPosts", "Post");
         }
 
+        
+        ModelState.AddModelError("", "Something wrong.");
+        return RedirectToAction("AllPosts", "Post");
+    }
+    [HttpPost]
+    public IActionResult DeleteComment(int id)
+    {
+        var comment = _context.Comments.Find(id);
 
-
-
-
-        public IActionResult Index()
+        if (comment == null)
         {
-            return View();
+            return NotFound();
         }
+
+        var username = User.Identity.Name;
+        var user = _context.Users.FirstOrDefault(x => x.Username == username);
+
+        if (comment.UserId != user.Id)
+        {
+            return RedirectToAction("Welcome", "Welcome");
+        }
+
+        _context.Comments.Remove(comment);
+        _context.SaveChanges();
+
+        return RedirectToAction("AllPosts", "Post");
+    }
+
+
+    public IActionResult Index()
+    {
+        return View();
     }
 }

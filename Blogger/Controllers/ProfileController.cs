@@ -57,7 +57,7 @@ public class ProfileController : BaseController
     }
 
     [HttpPost]
-    public async Task<IActionResult> ChangePassword(ChangePasswordResponseModel model)
+    public async Task<IActionResult> ChangePassword(ChangePasswordRequestModel model)
     {
         if (ModelState.IsValid)
         {

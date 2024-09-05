@@ -23,7 +23,7 @@ public class UserService(BlogContext context) : IUserService
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(ClaimTypes.Name, user.Username)
-        };
+        };  
 
         return claims;
     }
