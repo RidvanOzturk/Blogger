@@ -6,31 +6,23 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Security.Claims;
 using Blogger.Models.Requests;
+using ServiceLayer.Implementations;
+using ServiceLayer.Contracts;
 
-namespace Blogger.Controllers
-{
-    public class PostController : Controller
+namespace Blogger.Controllers;
+    public class PostController(IPostService postService) : Controller
     {
-        private readonly BlogContext _context;
-        public PostController(BlogContext context)
-        {
-            _context = context;
-        }
+        
 
         public IActionResult PostDetail(int id)
         {
-            var post = _context.Posts
-                .Include(p => p.User)
-                .Include(p => p.Comments)
-                    .ThenInclude(c => c.User)
-                .FirstOrDefault(p => p.Id == id);
-
-            if (post == null)
+            if (id == null)
             {
-                return NotFound();
+            return NotFound();
             }
+        var detail = postService.PostDetailAsync(id);
+        return View(detail);
 
-            return View(post);
         }
 
         [Authorize]
@@ -41,11 +33,7 @@ namespace Blogger.Controllers
 
         public IActionResult AllPosts()
         {
-            var posts = _context.Posts
-                                .Include(p => p.User)
-                                .Include(p => p.Comments)
-                                .ThenInclude(c => c.User)
-                                .ToList();
+           var posts = postService.AllPostsAsync();
 
             return View(posts);
         }
@@ -53,17 +41,7 @@ namespace Blogger.Controllers
         [HttpPost]
         public IActionResult DeletePost(int id)
         {
-            var post = _context.Posts
-                .Include(p => p.Comments)
-                .FirstOrDefault(p => p.Id == id);
-            if (post == null)
-            {
-                return NotFound();
-            }
-            _context.Comments.RemoveRange(post.Comments);
-            _context.Posts.Remove(post);
-            _context.SaveChanges();
-
+        var delPost = postService.DeletePostAsync(id);
             return RedirectToAction("AllPosts");
         }
        
@@ -80,28 +58,16 @@ namespace Blogger.Controllers
 
             if (ModelState.IsValid)
             {
-                var username = User.Identity.Name;
-                var user = _context.Users
-                    .FirstOrDefault(x => x.Username == username);
-
-                if (user != null)
-                {
-                    post.PostedDate = DateTime.Now;
-                    post.UserId = user.Id;
-                    user.Posts.Add(post);
-                    _context.SaveChanges();
-
-                    return RedirectToAction("AllPosts");
-                }
-                else
-                {
-                    ModelState.AddModelError("", "Kullanıcı bulunamadı.");
-                }
+            var username = User.Identity.Name;
+            if (username == null)
+            {
+                return RedirectToAction("Login", "Account");
             }
+
+        }
             return View("AllPosts", post);
         }
 
        
 
     }
-}
