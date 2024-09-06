@@ -50,24 +50,20 @@ namespace Blogger.Controllers;
         [HttpPost]
         public IActionResult Create(PostCreateRequest request)
         {
-            var post = new Post()
-            {
-                Title = request.Title,
-                Content = request.Content
-            };
+        var username = User.Identity.Name;
 
-            if (ModelState.IsValid)
-            {
-            var username = User.Identity.Name;
-            if (username == null)
-            {
-                return RedirectToAction("Login", "Account");
-            }
+        var result = await postService.CreatePostAsync(request, username);
 
+        if (result)
+        {
+            return RedirectToAction("AllPosts");
         }
-            return View("AllPosts", post);
+        else
+        {
+            ModelState.AddModelError("", "Kullanıcı bulunamadı.");
+            return View(request); // Hata durumunda aynı sayfaya dön
         }
 
-       
+
 
     }

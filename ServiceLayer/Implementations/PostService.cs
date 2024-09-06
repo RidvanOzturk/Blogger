@@ -37,27 +37,28 @@ public class PostService(BlogContext context) : IPostService
         context.Posts.Remove (post);
         await context.SaveChangesAsync();
     }
-    public async Task CreatePostAsync(string username)
+    public async Task<bool> CreatePostAsync(PostCreateRequest request, string username)
     {
-        
-        var user = context.Users
-            .FirstOrDefault(x => x.Username == username);
+        var user = await context.Users
+            .FirstOrDefaultAsync(x => x.Username == username);
 
         if (user != null)
         {
-            post.PostedDate = DateTime.Now;
-            post.UserId = user.Id;
+            var post = new Post
+            {
+                Title = request.Title,
+                Content = request.Content,
+                PostedDate = DateTime.Now,
+                UserId = user.Id
+            };
+
             user.Posts.Add(post);
-            _context.SaveChanges();
+            await context.SaveChangesAsync();
 
-            return RedirectToAction("AllPosts");
+            return true;
         }
-        else
-        {
-            ModelState.AddModelError("", "Kullanıcı bulunamadı.");
-        }
+        return false;
     }
-
 
 
 
