@@ -30,8 +30,25 @@ public class CommentService(BlogContext context) : ICommentService
         return true;
     }
 
-    public Task<bool> DeleteCommentAsync(int commentId, string username)
+    public async Task<bool> DeleteCommentAsync(int commentId, string username)
     {
-        throw new NotImplementedException();
+        var comment = await context.Comments.FindAsync(commentId);
+
+        if (comment == null)
+        {
+            return false;
+        }
+
+        var user = await context.Users.FirstOrDefaultAsync(x => x.Username == username);
+
+        if (user == null || comment.UserId != user.Id)
+        {
+            return false;
+        }
+
+        context.Comments.Remove(comment);
+        await context.SaveChangesAsync();
+
+        return true;
     }
 }

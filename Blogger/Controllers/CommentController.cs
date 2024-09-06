@@ -34,27 +34,24 @@ public class CommentController(ICommentService commentService) : Controller
         return RedirectToAction("AllPosts", "Post");
     }
     [HttpPost]
-    public IActionResult DeleteComment(int id)
+    public async Task<IActionResult> DeleteComment(int id)
     {
-        var comment = _context.Comments.Find(id);
-
-        if (comment == null)
-        {
-            return NotFound();
-        }
-
         var username = User.Identity.Name;
-        var user = _context.Users.FirstOrDefault(x => x.Username == username);
 
-        if (comment.UserId != user.Id)
+        if (username == null)
         {
-            return RedirectToAction("Welcome", "Welcome");
+            return RedirectToAction("Login", "Account");
         }
 
-        _context.Comments.Remove(comment);
-        _context.SaveChanges();
+        var result = await commentService.DeleteCommentAsync(id, username);
 
-        return RedirectToAction("AllPosts", "Post");
+        if (result)
+        {
+            return RedirectToAction("AllPosts", "Post");
+        }
+
+        // Hata durumunda farklı bir sayfaya yönlendirebilirsiniz
+        return RedirectToAction("Welcome", "Welcome");
     }
 
 
