@@ -8,7 +8,7 @@ using ServiceLayer.Contracts;
 
 namespace Blogger.Controllers;
 
-public class ProfileController(IProfileService profileService) : BaseController
+public class ProfileController(IProfileService profileService) : Controller
 {
     
 
@@ -60,15 +60,7 @@ public class ProfileController(IProfileService profileService) : BaseController
     {
         if (ModelState.IsValid)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == model.Id);
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            user.Password = BCrypt.Net.BCrypt.HashPassword(model.NewPassword);
-            _context.SaveChanges();
+            
 
             TempData["SuccessMessage"] = "Password changed successfully.";
             return RedirectToAction("ProfileDetail");
