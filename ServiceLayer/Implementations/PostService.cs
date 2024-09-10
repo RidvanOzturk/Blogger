@@ -2,6 +2,7 @@
 using DataLayer.Entities;
 using Microsoft.EntityFrameworkCore;
 using ServiceLayer.Contracts;
+using ServiceLayer.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,13 +20,14 @@ public class PostService(BlogContext context) : IPostService
             .ThenInclude(c => c.User)
             .FirstOrDefaultAsync(p => p.Id == id);
     }
-    public async Task AllPostsAsync()
+    public async Task<List<Post>> AllPostsAsync()
     {
-        var posts = await context.Posts
+        var post = await context.Posts
            .Include(p => p.User)
            .Include(p => p.Comments)
            .ThenInclude(c => c.User)
            .ToListAsync();
+        return post;
     }
     public async Task DeletePostAsync(int id)
     {
@@ -37,11 +39,15 @@ public class PostService(BlogContext context) : IPostService
         context.Posts.Remove (post);
         await context.SaveChangesAsync();
     }
-    public async Task<bool> CreatePostAsync(PostCreateRequest request, string username)
+    public async Task<bool> CreatePostAsync(PostCreateRequestDTO request)
     {
         var user = await context.Users
-            .FirstOrDefaultAsync(x => x.Username == username);
+            .FirstOrDefaultAsync(x => x.Username == request.Username);
 
+        if (user == null)
+        {
+            return false;
+        }
         if (user != null)
         {
             var post = new Post

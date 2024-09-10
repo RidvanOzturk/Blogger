@@ -50,7 +50,7 @@ public class CommentController(ICommentService commentService) : Controller
             return RedirectToAction("AllPosts", "Post");
         }
 
-        // Hata durumunda farklı bir sayfaya yönlendirebilirsiniz
+        // Hata durumunda farklı bir sayfaya yönlendirelebilir
         return RedirectToAction("Welcome", "Welcome");
     }
 

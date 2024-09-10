@@ -4,14 +4,13 @@ using Blogger.Models.Responses;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using ServiceLayer.Contracts;
 
 namespace Blogger.Controllers;
 
-public class ProfileController : BaseController
+public class ProfileController(IProfileService profileService) : BaseController
 {
-    public ProfileController(BlogContext context) : base(context)
-    {
-    }
+    
 
     public IActionResult ProfileDetail()
     {

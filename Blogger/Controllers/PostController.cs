@@ -8,62 +8,66 @@ using System.Security.Claims;
 using Blogger.Models.Requests;
 using ServiceLayer.Implementations;
 using ServiceLayer.Contracts;
+using ServiceLayer.DTOs;
 
 namespace Blogger.Controllers;
-    public class PostController(IPostService postService) : Controller
-    {
-        
+public class PostController(IPostService postService) : Controller
+{
 
-        public IActionResult PostDetail(int id)
+
+    public IActionResult PostDetail(int id)
+    {
+        if (id == null)
         {
-            if (id == null)
-            {
             return NotFound();
-            }
+        }
         var detail = postService.PostDetailAsync(id);
         return View(detail);
 
-        }
+    }
 
-        [Authorize]
-        public IActionResult PostContent()
-        {
-            return View();
-        }
+    [Authorize]
+    public IActionResult PostContent()
+    {
+        return View();
+    }
 
-        public IActionResult AllPosts()
-        {
-           var posts = postService.AllPostsAsync();
+    public async Task<IActionResult> AllPosts()
+    {
+        var posts = await postService.AllPostsAsync();
+        return View(posts);
+    }
 
-            return View(posts);
-        }
-
-        [HttpPost]
-        public IActionResult DeletePost(int id)
-        {
+    [HttpPost]
+    public IActionResult DeletePost(int id)
+    {
         var delPost = postService.DeletePostAsync(id);
-            return RedirectToAction("AllPosts");
-        }
-       
+        return RedirectToAction("AllPosts");
+    }
 
 
-        [HttpPost]
-        public IActionResult Create(PostCreateRequest request)
-        {
+
+    [HttpPost]
+    public async Task<IActionResult> Create(PostCreateRequest request)
+    {
         var username = User.Identity.Name;
-
-        var result = await postService.CreatePostAsync(request, username);
-
-        if (result)
+        if (username == null)
         {
-            return RedirectToAction("AllPosts");
-        }
-        else
-        {
-            ModelState.AddModelError("", "Kullanıcı bulunamadı.");
-            return View(request); // Hata durumunda aynı sayfaya dön
+            return RedirectToAction("Login", "Account");
         }
 
+        var postRequestDTO = new PostCreateRequestDTO
+        {
+            Title = request.Title,
+            Content = request.Content,
+            Username = username
+        };
 
+        var res = await postService.CreatePostAsync(postRequestDTO);
+
+        return RedirectToAction("AllPosts");
 
     }
+
+
+}
