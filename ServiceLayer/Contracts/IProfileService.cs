@@ -8,5 +8,6 @@ using System.Threading.Tasks;
 namespace ServiceLayer.Contracts;
 public class IProfileService
 {
-    Task  ChangePasswordAsync(ChangePasswordRequestDTO requestDTO);
+    Task ChangePasswordAsync(ChangePasswordRequestDTO requestDTO);
+    Task<bool> ProfileDetailAsync(ChangePasswordResponseDTO responseDTO);
 }

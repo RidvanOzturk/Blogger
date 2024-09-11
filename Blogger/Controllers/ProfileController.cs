@@ -10,29 +10,26 @@ namespace Blogger.Controllers;
 
 public class ProfileController(IProfileService profileService) : Controller
 {
-    
 
-    public IActionResult ProfileDetail()
+
+    public async Task<IActionResult> ProfileDetail()
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        if (int.TryParse(userId, out int id))
+        if (userId == null)
         {
-            var user = _context.Users
-                .Include(u => u.Posts)
-                .Include(u => u.Comments)
-                .FirstOrDefault(u => u.Id == id);
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            ViewBag.ChangePasswordModel = new ChangePasswordResponseModel { Id = user.Id };
-            return View(user);
+            return RedirectToAction("Login", "Account");
         }
 
-        return RedirectToAction("Login", "Account");
+        var result = await profileService.ProfileDetailAsync(userId, out var userProfile);
+
+        if (!result || userProfile == null)
+        {
+            return NotFound();
+        }
+
+        ViewBag.ChangePasswordModel = new ChangePasswordResponseModel { Id = userProfile.Id };
+        return View(userProfile);
     }
 
     [HttpPost]
