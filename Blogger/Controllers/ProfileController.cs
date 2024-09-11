@@ -21,9 +21,9 @@ public class ProfileController(IProfileService profileService) : Controller
             return RedirectToAction("Login", "Account");
         }
 
-        var result = await profileService.ProfileDetailAsync(userId, out var userProfile);
+        var (success, userProfile) = await profileService.ProfileDetailAsync(userId);
 
-        if (!result || userProfile == null)
+        if (!success || userProfile == null)
         {
             return NotFound();
         }
@@ -32,25 +32,6 @@ public class ProfileController(IProfileService profileService) : Controller
         return View(userProfile);
     }
 
-    [HttpPost]
-    public async Task<IActionResult> ChangeUsername(ChangeUserNameRequestModel request)
-    {
-        if (ModelState.IsValid)
-        {
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == request.Id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            user.Username = request.Username;
-
-            await _context.SaveChangesAsync();
-
-            return RedirectToAction("ProfileDetail", new { id = request.Id });
-        }
-        return View("ProfileDetail", request);
-    }
 
     [HttpPost]
     public async Task<IActionResult> ChangePassword(ChangePasswordRequestModel model)

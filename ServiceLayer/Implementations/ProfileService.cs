@@ -13,10 +13,8 @@ using System.Threading.Tasks;
 namespace ServiceLayer.Implementations;
 public class PostService(BlogContext context) : IPostService
 {
-    public async Task<bool> ProfileDetailAsync(string userId, out ChangePasswordResponseDTO? userProfile)
+    public async Task<(bool success, ChangePasswordResponseDTO? userProfile)> ProfileDetailAsync(string userId)
     {
-        userProfile = null;
-
         var user = await context.Users
             .Include(u => u.Posts)
             .Include(u => u.Comments)
@@ -24,29 +22,30 @@ public class PostService(BlogContext context) : IPostService
 
         if (user == null)
         {
-            return false; // User not found
+            return (false, null); 
         }
 
-        userProfile = new ChangePasswordResponseDTO
+        var userProfile = new ChangePasswordResponseDTO
         {
             Id = user.Id,
            
         };
 
-        return true;
+        return (true, userProfile); 
     }
 
 
-    public async Task ChangePasswordAsync(ChangePasswordRequestDTO requestDTO)
+
+    public async Task ChangePasswordAsync(ChangePasswordRequestDTO request)
     {
-        var user = await context.Users.FirstOrDefaultAsync(x => x.Id == requestDTO.Id);
+        var user = await context.Users.FirstOrDefaultAsync(x => x.Id == request.Id);
 
         if (user != null)
         {
-            user.Password = BCrypt.Net.BCrypt.HashPassword(requestDTO.NewPassword);
+            user.Password = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
             context.SaveChangesAsync();
         }
-
+        
         
     }
 }

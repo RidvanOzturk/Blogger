@@ -8,16 +8,6 @@
 <h2>Username: @Model.Username</h2>
 <h4>Password: ******</h4>
 
-<h2>Change Username</h2>
-<form asp-action="ChangeUsername" method="post">
-    <div class="form-group">
-        <label asp-for="Username" class="control-label"></label>
-        <input asp-for="Username" class="form-control" />
-        <span asp-validation-for="Username" class="text-danger"></span>
-    </div>
-    <input type="hidden" asp-for="Id" />
-    <button type="submit" class="btn btn-primary">Save</button>
-</form>
 
 <h2>Change Password</h2>
 <form asp-action="ChangePassword" method="post">
