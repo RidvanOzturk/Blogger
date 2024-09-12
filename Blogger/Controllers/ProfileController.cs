@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using ServiceLayer.Contracts;
+using Azure.Core;
+using ServiceLayer.DTOs;
 
 namespace Blogger.Controllers;
 
@@ -38,17 +40,13 @@ public class ProfileController(IProfileService profileService) : Controller
     {
         if (ModelState.IsValid)
         {
-            
+            profileService.ChangePasswordAsync(ChangePasswordRequestDTO model);
 
             TempData["SuccessMessage"] = "Password changed successfully.";
             return RedirectToAction("ProfileDetail");
         }
 
-        var currentUser = _context.Users
-            .AsNoTracking()
-            .Include(u => u.Posts)
-            .Include(u => u.Comments)
-            .FirstOrDefault(u => u.Id == model.Id);
+        var currentUser = profileService.CurrentUserAsync(model);
 
         ViewBag.ChangePasswordModel = model;
         return View("ProfileDetail", currentUser);

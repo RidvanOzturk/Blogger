@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ServiceLayer.DTOs;
-internal class ChangePasswordRequestDTO
+public class ChangePasswordRequestDTO
 {
 
     public int Id { get; set; } // User ID

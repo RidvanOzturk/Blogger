@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ServiceLayer.Implementations;
-public class PostService(BlogContext context) : IPostService
+public class ProfileService(BlogContext context) : IProfileService
 {
     public async Task<(bool success, ChangePasswordResponseDTO? userProfile)> ProfileDetailAsync(string userId)
     {
@@ -47,5 +47,14 @@ public class PostService(BlogContext context) : IPostService
         }
         
         
+    }
+
+    public async Task CurrentUserAsync(ChangePasswordRequestDTO model)
+    {
+        context.Users
+            .AsNoTracking()
+            .Include(u => u.Posts)
+            .Include(u => u.Comments)
+            .FirstOrDefault(u => u.Id == model.Id);
     }
 }

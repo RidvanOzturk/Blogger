@@ -10,5 +10,6 @@ public interface IProfileService
 {
     Task ChangePasswordAsync(ChangePasswordRequestDTO request);
     Task<(bool success, ChangePasswordResponseDTO? userProfile)> ProfileDetailAsync(string userId);
+    Task CurrentUserAsync(ChangePasswordRequestDTO model);
 
 }
