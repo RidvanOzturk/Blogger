@@ -13,25 +13,22 @@ using System.Threading.Tasks;
 namespace ServiceLayer.Implementations;
 public class ProfileService(BlogContext context) : IProfileService
 {
-    public async Task<(bool success, ChangePasswordResponseDTO? userProfile)> ProfileDetailAsync(string userId)
+    public async Task<(bool success, ChangePasswordResponseDTO? userProfile, User? user)> ProfileDetailAsync(string userId)
     {
         var user = await context.Users
             .Include(u => u.Posts)
             .Include(u => u.Comments)
             .FirstOrDefaultAsync(u => u.Id == int.Parse(userId));
-
         if (user == null)
         {
-            return (false, null); 
+            return (false, null, user); 
         }
-
         var userProfile = new ChangePasswordResponseDTO
         {
             Id = user.Id,
            
         };
-
-        return (true, userProfile); 
+        return (true, userProfile, user); 
     }
 
     //sorulacak

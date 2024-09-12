@@ -1,6 +1,6 @@
 ﻿namespace Blogger.Models.Requests
 {
-    public class PostCreateRequest
+    public class PostCreateRequestModel
     {
         public string Title { get; set; }
         public string Content { get; set; }

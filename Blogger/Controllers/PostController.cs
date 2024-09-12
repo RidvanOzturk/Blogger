@@ -48,7 +48,7 @@ public class PostController(IPostService postService) : Controller
 
 
     [HttpPost]
-    public async Task<IActionResult> Create(PostCreateRequest request)
+    public async Task<IActionResult> Create(PostCreateRequestModel request)
     {
         var username = User.Identity.Name;
         if (username == null)

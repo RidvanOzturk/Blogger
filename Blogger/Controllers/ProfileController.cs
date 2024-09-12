@@ -22,23 +22,22 @@ public class ProfileController(IProfileService profileService) : Controller
         {
             return RedirectToAction("Login", "Account");
         }
-
-        var (success, userProfile) = await profileService.ProfileDetailAsync(userId);
+        //---- ----
+        var (success, userProfile, user) = await profileService.ProfileDetailAsync(userId);
 
         if (!success || userProfile == null)
         {
             return NotFound();
         }
 
-        ViewBag.ChangePasswordModel = new ChangePasswordResponseModel { Id = userProfile.Id };
-        return View(userProfile);
+        ViewBag.ChangePasswordModel = new ChangePasswordResponseModel { Id = user.Id };
+        return View(user);
     }
 
 
     public async Task<IActionResult> ChangePassword(ChangePasswordRequestModel model)
     {
-        if (ModelState.IsValid)
-        {
+        
             var changePasswordRequestDTO = new ChangePasswordRequestDTO
             {
                 Id = model.Id,
@@ -47,8 +46,6 @@ public class ProfileController(IProfileService profileService) : Controller
             };
             await profileService.ChangePasswordAsync(changePasswordRequestDTO);
             TempData["SuccessMessage"] = "Password changed successfully.";
-            return RedirectToAction("ProfileDetail");
-        }
         var currentUser = await profileService.CurrentUserAsync(model.Id);
         ViewBag.ChangePasswordModel = model;
         return View("ProfileDetail", currentUser);
