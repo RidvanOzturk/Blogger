@@ -35,19 +35,21 @@ public class ProfileController(IProfileService profileService) : Controller
     }
 
 
-    [HttpPost]
     public async Task<IActionResult> ChangePassword(ChangePasswordRequestModel model)
     {
         if (ModelState.IsValid)
         {
-            profileService.ChangePasswordAsync(ChangePasswordRequestDTO model);
-
+            var changePasswordRequestDTO = new ChangePasswordRequestDTO
+            {
+                Id = model.Id,
+                NewPassword = model.NewPassword,
+                ConfirmPassword = model.ConfirmPassword
+            };
+            await profileService.ChangePasswordAsync(changePasswordRequestDTO);
             TempData["SuccessMessage"] = "Password changed successfully.";
             return RedirectToAction("ProfileDetail");
         }
-
-        var currentUser = profileService.CurrentUserAsync(model);
-
+        var currentUser = await profileService.CurrentUserAsync(model.Id);
         ViewBag.ChangePasswordModel = model;
         return View("ProfileDetail", currentUser);
     }
