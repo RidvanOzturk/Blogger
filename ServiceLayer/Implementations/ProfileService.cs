@@ -33,13 +33,13 @@ public class ProfileService(BlogContext context) : IProfileService
 
     //sorulacak
 
-    public async Task ChangePasswordAsync(ChangePasswordRequestDTO request)
+    public async Task ChangePasswordAsync(ChangePasswordRequestDTO requestDTO)
     {
-        var user = await context.Users.FirstOrDefaultAsync(x => x.Id == request.Id);
+        var user = await context.Users.FirstOrDefaultAsync(x => x.Id == requestDTO.Id);
 
         if (user != null)
         {
-            user.Password = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+            user.Password = BCrypt.Net.BCrypt.HashPassword(requestDTO.NewPassword);
             await context.SaveChangesAsync();
         }
     }
