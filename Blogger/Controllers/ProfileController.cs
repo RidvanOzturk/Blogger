@@ -35,20 +35,34 @@ public class ProfileController(IProfileService profileService) : Controller
     }
 
 
+    [HttpPost]
     public async Task<IActionResult> ChangePassword(ChangePasswordRequestModel model)
     {
-        
+        if (ModelState.IsValid)
+        {
             var changePasswordRequestDTO = new ChangePasswordRequestDTO
             {
                 Id = model.Id,
                 NewPassword = model.NewPassword,
                 ConfirmPassword = model.ConfirmPassword
             };
+
             await profileService.ChangePasswordAsync(changePasswordRequestDTO);
+
             TempData["SuccessMessage"] = "Password changed successfully.";
+            return RedirectToAction("ProfileDetail");
+        }
+
+        // Hatalı model durumunda, mevcut kullanıcıyı yükleyip view'e geri dönüyoruz
         var currentUser = await profileService.CurrentUserAsync(model.Id);
-        ViewBag.ChangePasswordModel = model;
+        if (currentUser == null)
+        {
+            return NotFound(); 
+        }
+
+        ViewBag.ChangePasswordModel = model; // Kullanıcı formu doldurduysa, hatalı olan verileri yeniden göstermek için
         return View("ProfileDetail", currentUser);
     }
+
 
 }

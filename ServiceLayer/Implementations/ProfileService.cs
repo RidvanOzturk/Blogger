@@ -40,7 +40,7 @@ public class ProfileService(BlogContext context) : IProfileService
         if (user != null)
         {
             user.Password = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
-            await context.SaveChangesAsync(); 
+            await context.SaveChangesAsync();
         }
     }
 
