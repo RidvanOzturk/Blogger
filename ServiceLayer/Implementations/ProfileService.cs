@@ -33,16 +33,33 @@ public class ProfileService(BlogContext context) : IProfileService
 
     //sorulacak
 
-    public async Task ChangePasswordAsync(ChangePasswordRequestDTO requestDTO)
+    public async Task ChangePasswordAsync(ChangePasswordRequestDTO model)
     {
-        var user = await context.Users.FirstOrDefaultAsync(x => x.Id == requestDTO.Id);
+        // Model'i DTO'ya dönüştürüyoruz.
+        var changePasswordRequestDTO = new ChangePasswordRequestDTO
+        {
+            Id = model.Id,
+            NewPassword = model.NewPassword,
+            ConfirmPassword = model.ConfirmPassword
+        };
+
+        var user = await context.Users.FirstOrDefaultAsync(x => x.Id == changePasswordRequestDTO.Id);
 
         if (user != null)
         {
-            user.Password = BCrypt.Net.BCrypt.HashPassword(requestDTO.NewPassword);
+            user.Password = BCrypt.Net.BCrypt.HashPassword(changePasswordRequestDTO.NewPassword);
             await context.SaveChangesAsync();
         }
     }
+
+    public async Task<User?> GetUserByIdAsync(int userId)
+    {
+        return await context.Users
+            .Include(u => u.Posts)
+            .Include(u => u.Comments)
+            .FirstOrDefaultAsync(u => u.Id == userId);
+    }
+
 
     public async Task<ChangePasswordResponseDTO?> CurrentUserAsync(int userId)
     {

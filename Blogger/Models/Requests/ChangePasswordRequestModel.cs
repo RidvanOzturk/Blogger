@@ -4,14 +4,16 @@ namespace Blogger.Models.Requests;
 
 public class ChangePasswordRequestModel
 {
-    public int Id { get; set; } // User ID
+    public int Id { get; set; }
 
-    [Required(ErrorMessage = "New Password is required")]
+    [Required(ErrorMessage = "New password is required.")]
     [DataType(DataType.Password)]
+    [StringLength(100, MinimumLength = 6, ErrorMessage = "Password must be at least 6 characters long.")]
     public string NewPassword { get; set; }
 
-    [Required(ErrorMessage = "Confirm Password is required")]
+    [Required(ErrorMessage = "Please confirm your password.")]
     [DataType(DataType.Password)]
-    [Compare("NewPassword", ErrorMessage = "Passwords do not match")]
+    [Compare("NewPassword", ErrorMessage = "The password and confirmation password do not match.")]
     public string ConfirmPassword { get; set; }
 }
+

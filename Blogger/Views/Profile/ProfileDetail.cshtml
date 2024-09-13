@@ -1,4 +1,5 @@
-﻿@model UserProfileViewModel
+﻿@using Blogger.Models.Responses
+@model UserProfileResponseModel
 
 @{
     ViewData["Title"] = "ProfileDetail";
@@ -6,22 +7,24 @@
 
 <h2>Username: @Model.User.Username</h2>
 <h4>Password: ******</h4>
-
 <h2>Change Password</h2>
 <form asp-action="ChangePassword" method="post">
     <div class="form-group">
-        <label for="NewPassword" class="control-label">New Password</label>
+        <label asp-for="ChangePasswordModel.NewPassword" class="control-label">New Password</label>
         <input asp-for="ChangePasswordModel.NewPassword" class="form-control" />
         <span asp-validation-for="ChangePasswordModel.NewPassword" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label for="ConfirmPassword" class="control-label">Confirm Password</label>
+        <label asp-for="ChangePasswordModel.ConfirmPassword" class="control-label">Confirm Password</label>
         <input asp-for="ChangePasswordModel.ConfirmPassword" class="form-control" />
         <span asp-validation-for="ChangePasswordModel.ConfirmPassword" class="text-danger"></span>
     </div>
     <input type="hidden" asp-for="ChangePasswordModel.Id" />
     <button type="submit" class="btn btn-primary">Save</button>
 </form>
+
+
+
 
 <h2>Posts</h2>
 @foreach (var post in Model.User.Posts)

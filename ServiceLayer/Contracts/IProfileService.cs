@@ -12,5 +12,6 @@ public interface IProfileService
     Task<(bool success, ChangePasswordResponseDTO? userProfile, User user)> ProfileDetailAsync(string userId);
     Task ChangePasswordAsync(ChangePasswordRequestDTO request);
     Task<ChangePasswordResponseDTO?> CurrentUserAsync(int userId);
+    Task<User?> GetUserByIdAsync(int userId);
 
 }

@@ -2,43 +2,56 @@
 using Blogger.Models.Requests;
 using Blogger.Models.Responses;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using ServiceLayer.Contracts;
-using Azure.Core;
 using ServiceLayer.DTOs;
 
 namespace Blogger.Controllers;
 
-public class ProfileController(IProfileService profileService) : Controller
+public class ProfileController : Controller
 {
+    private readonly IProfileService profileService;
 
+    // Dependency injection
+    public ProfileController(IProfileService profileService)
+    {
+        this.profileService = profileService;
+    }
 
+    [HttpGet]
     public async Task<IActionResult> ProfileDetail()
     {
+        // Kullanıcı ID'sini al
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
         if (userId == null)
         {
             return RedirectToAction("Login", "Account");
         }
-        //---- ----
-        var (success, userProfile, user) = await profileService.ProfileDetailAsync(userId);
 
-        if (!success || userProfile == null)
+        // Kullanıcıyı ID ile getir
+        var user = await profileService.GetUserByIdAsync(int.Parse(userId));
+        if (user == null)
         {
             return NotFound();
         }
 
-        ViewBag.ChangePasswordModel = new ChangePasswordResponseModel { Id = user.Id };
-        return View(user);
+        // ViewModel oluştur ve şifre değiştirme modeli ekle
+        var viewModel = new UserProfileResponseModel
+        {
+            User = user,
+            ChangePasswordModel = new ChangePasswordRequestModel { Id = user.Id }
+        };
+
+        return View(viewModel);
     }
 
     [HttpPost]
     public async Task<IActionResult> ChangePassword(ChangePasswordRequestModel model)
     {
+        // Model valid ise
         if (ModelState.IsValid)
         {
+            // DTO oluştur ve service ile şifreyi değiştir
             var changePasswordRequestDTO = new ChangePasswordRequestDTO
             {
                 Id = model.Id,
@@ -46,25 +59,26 @@ public class ProfileController(IProfileService profileService) : Controller
                 ConfirmPassword = model.ConfirmPassword
             };
 
-         
             await profileService.ChangePasswordAsync(changePasswordRequestDTO);
 
             TempData["SuccessMessage"] = "Password changed successfully.";
             return RedirectToAction("ProfileDetail");
         }
 
-        var currentUser = await profileService.CurrentUserAsync(model.Id);
-        if (currentUser == null)
+        // Eğer model invalid ise, kullanıcıyı tekrar yükleyip formu geri göster
+        var user = await profileService.GetUserByIdAsync(model.Id);
+        if (user == null)
         {
-            return NotFound(); 
+            return NotFound();
         }
 
-        ViewBag.ChangePasswordModel = model; 
-        return View("ProfileDetail", currentUser);
+        // ViewModel tekrar oluştur
+        var viewModel = new UserProfileResponseModel
+        {
+            User = user,
+            ChangePasswordModel = new ChangePasswordRequestModel { Id = user.Id }
+        };
+
+        return View("ProfileDetail", viewModel);
     }
-
-
-
-
-
 }
