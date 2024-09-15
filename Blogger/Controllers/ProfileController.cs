@@ -8,42 +8,35 @@ using ServiceLayer.DTOs;
 
 namespace Blogger.Controllers;
 
-public class ProfileController : Controller
+
+public class ProfileController(IProfileService profileService) : Controller
 {
-    private readonly IProfileService profileService;
 
-    // Dependency injection
-    public ProfileController(IProfileService profileService)
+
+    public async Task<IActionResult> ProfileDetail(int id)
     {
-        this.profileService = profileService;
-    }
-
-    [HttpGet]
-    public async Task<IActionResult> ProfileDetail()
-    {
-        // Kullanıcı ID'sini al
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (userId == null)
-        {
-            return RedirectToAction("Login", "Account");
-        }
-
-        // Kullanıcıyı ID ile getir
-        var user = await profileService.GetUserByIdAsync(int.Parse(userId));
-        if (user == null)
+        var userResult = await profileService.ProfileDetailAsync(id);
+        if (!userResult.Success)
         {
             return NotFound();
         }
 
-        // ViewModel oluştur ve şifre değiştirme modeli ekle
+        // Giriş yapan kullanıcının ID'sini al
+        var loggedInUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+        bool isSelf = loggedInUserId == id;
+
         var viewModel = new UserProfileResponseModel
         {
-            User = user,
-            ChangePasswordModel = new ChangePasswordRequestModel { Id = user.Id }
+            User = userResult.User,
+            ChangePasswordModel = isSelf ? new ChangePasswordRequestModel { Id = userResult.User.Id } : null
         };
 
         return View(viewModel);
     }
+
+
+
 
     [HttpPost]
     public async Task<IActionResult> ChangePassword(ChangePasswordRequestModel model)

@@ -3,33 +3,32 @@ using DataLayer.Entities;
 using Microsoft.EntityFrameworkCore;
 using ServiceLayer.Contracts;
 using ServiceLayer.DTOs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace ServiceLayer.Implementations;
 public class ProfileService(BlogContext context) : IProfileService
 {
-    public async Task<(bool success, ChangePasswordResponseDTO? userProfile, User? user)> ProfileDetailAsync(string userId)
+    public async Task<(bool Success, ChangePasswordResponseDTO? UserProfile, User? User)> ProfileDetailAsync(int userId)
     {
         var user = await context.Users
             .Include(u => u.Posts)
             .Include(u => u.Comments)
-            .FirstOrDefaultAsync(u => u.Id == int.Parse(userId));
+            .FirstOrDefaultAsync(u => u.Id == userId);
+
         if (user == null)
         {
-            return (false, null, user); 
+            return (false, null, null);
         }
+
         var userProfile = new ChangePasswordResponseDTO
         {
-            Id = user.Id,
-           
+            Id = user.Id
         };
-        return (true, userProfile, user); 
+
+        return (true, userProfile, user);
     }
+
+
 
     //sorulacak
 
