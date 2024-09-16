@@ -11,17 +11,18 @@
 <form asp-action="ChangePassword" method="post">
     <div class="form-group">
         <label asp-for="ChangePasswordModel.NewPassword" class="control-label">New Password</label>
-        <input asp-for="ChangePasswordModel.NewPassword" class="form-control" />
+        <input asp-for="ChangePasswordModel.NewPassword" class="form-control" name="NewPassword" />
         <span asp-validation-for="ChangePasswordModel.NewPassword" class="text-danger"></span>
     </div>
     <div class="form-group">
         <label asp-for="ChangePasswordModel.ConfirmPassword" class="control-label">Confirm Password</label>
-        <input asp-for="ChangePasswordModel.ConfirmPassword" class="form-control" />
+        <input asp-for="ChangePasswordModel.ConfirmPassword" class="form-control" name="ConfirmPassword" />
         <span asp-validation-for="ChangePasswordModel.ConfirmPassword" class="text-danger"></span>
     </div>
-    <input type="hidden" asp-for="ChangePasswordModel.Id" />
+    <input type="hidden" asp-for="ChangePasswordModel.Id" name="Id" />
     <button type="submit" class="btn btn-primary">Save</button>
 </form>
+
 
 
 

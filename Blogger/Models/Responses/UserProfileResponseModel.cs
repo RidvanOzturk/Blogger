@@ -1,5 +1,4 @@
-﻿using Blogger.Models.Requests;
-using DataLayer.Entities;
+﻿using DataLayer.Entities;
 
 namespace Blogger.Models.Responses;
 

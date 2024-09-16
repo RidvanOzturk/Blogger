@@ -42,9 +42,20 @@ public class ProfileController(IProfileService profileService) : Controller
     [HttpPost]
     public async Task<IActionResult> ChangePassword(ChangePasswordRequestModel model)
     {
+        if (!ModelState.IsValid)
+        {
+            // Hataları inceleyin
+            var errors = ModelState.Values.SelectMany(v => v.Errors);
+            foreach (var error in errors)
+            {
+                Console.WriteLine(error.ErrorMessage);  // Hataları log'lamak veya hata mesajını incelemek için
+            }
+        }
+
         // Model valid ise
         if (ModelState.IsValid)
         {
+
             // DTO oluştur ve service ile şifreyi değiştir
             var changePasswordRequestDTO = new ChangePasswordRequestDTO
             {
@@ -56,7 +67,7 @@ public class ProfileController(IProfileService profileService) : Controller
             await profileService.ChangePasswordAsync(changePasswordRequestDTO);
 
             TempData["SuccessMessage"] = "Password changed successfully.";
-            return RedirectToAction("ProfileDetail");
+            return RedirectToAction("ProfileDetail", new { id = model.Id });
         }
 
         // Eğer model invalid ise, kullanıcıyı tekrar yükleyip formu geri göster
