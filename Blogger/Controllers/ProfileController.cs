@@ -15,6 +15,7 @@ public class ProfileController(IProfileService profileService) : Controller
 
     public async Task<IActionResult> ProfileDetail(int id)
     {
+        Console.WriteLine($"Received userId: {id}");
         var userResult = await profileService.ProfileDetailAsync(id);
         if (!userResult.Success)
         {
@@ -33,7 +34,7 @@ public class ProfileController(IProfileService profileService) : Controller
         };
 
         return View(viewModel);
-    }
+        }
 
 
 

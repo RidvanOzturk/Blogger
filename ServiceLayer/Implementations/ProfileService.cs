@@ -10,23 +10,27 @@ public class ProfileService(BlogContext context) : IProfileService
 {
     public async Task<(bool Success, ChangePasswordResponseDTO? UserProfile, User? User)> ProfileDetailAsync(int userId)
     {
+        // Kullanıcıyı veritabanından sorgulama
         var user = await context.Users
             .Include(u => u.Posts)
             .Include(u => u.Comments)
             .FirstOrDefaultAsync(u => u.Id == userId);
 
+        // Eğer kullanıcı bulunamazsa
         if (user == null)
         {
+            Console.WriteLine($"No user found for userId: {userId}"); 
             return (false, null, null);
         }
-
+        // ChangePasswordResponseDTO oluştur
         var userProfile = new ChangePasswordResponseDTO
         {
             Id = user.Id
+            
         };
-
         return (true, userProfile, user);
     }
+
 
 
 
