@@ -34,3 +34,12 @@ A simple blogging platform where users can post articles, leave comments, and ma
 4. **Run the Application**:
    ```bash
    dotnet run
+
+### Important
+Make sure to update the `appsettings.json` file with the correct connection string to match your SQL Server instance. This step is necessary for the application to connect to the database and run properly.
+
+```json
+"ConnectionStrings": {
+  "DefaultConnection": "Your-SQL-Server-Connection-String"
+}
+
